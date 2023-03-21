@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="./js-hw.css">
+  </head>
+  <body>
+    <div class="head w-100 d-flex align-items-center justify-content-center bg-secondary">
+        <h1>JS 回家功課 資料表篩選及查詢</h1>
+    </div>
+
+    <div class=" w-100" id="fliterbox">
+        <div class=" row  px-md-5 mx-auto fliterbox">
+          <div class="col-lg-auto pricefliterbox border border-dark rounded ">
+            <div class="row">
+              <label for="customRange3" class="form-label col">
+                <h4 class="my-auto">商品價格在</h4>
+              </label>
+              <input class="col bg-light " id="itemprice" value="100000">
+              <h4 class="col">之內</h4>
+            </div>
+            <div class="row">
+              <div class="col-md-1 col-2">0</div>
+              <input type="range" class="form-range col" id="ranger" min="0" max="100000" step="100" id="customRange3"
+                value="100000">
+              <div class="col-md-2 col-3">100000</div>
+            </div>
+          </div>
+          <div class="col-md-4 mx-1">
+            <div class="h-100 row">
+              <h3 class="col m-auto ">商品數量</h3>
+              <select class=" col h-100 w-100 form-select form-select-lg" aria-label=".form-select-lg example" id="itemamong">
+                <option selected value="0">> = </option>
+                <option value="1"><</option>
+                <option value="2">></option>
+              </select>
+              <input class="col-3" type="text" value="0" id="itemamountinput">
+            </div>
+          </div>
+          <select class="col-ms-3 col form-select form-select-lg" aria-label=".form-select-lg example" id="type_change">
+            <option selected value="all">ALL</option>
+            <option value="3C">3C</option>
+            <option value="food">食品</option>
+            <option value="drink">飲料</option>
+          </select>
+        </div>
+        <div class="searchbox row w-100">
+          <h4 class="col-6 ">商品名稱查詢 (輸入完請按Enter)</h4>
+          <input class="col-6" type="text" id="itemname">
+        </div>
+    </div>
+    <div id="container"> </div>
+    <div class="w-100 bg-dark" id="container2"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script type="module">
+        import {product} from './product.js';
+        let container,container2;
+        let table, thead, tbody;
+        let ranger,selector ,filter;
+        let itemprice,itemamong,itemtype,itemamountinput,itemname;
+        let productarr = [],product2 = [];
+        let Title = ['商品編號', '商品名稱', '商品數量', '商品價格', '商品類別'];
+        window.onload =function(){
+
+
+          container = document.getElementById('container');
+          table = document.createElement('table');
+          table.setAttribute("class", "table table-bordered table-striped table-dark");
+          thead = document.createElement('thead');
+          tbody = document.createElement('tbody');
+          CreateThead(Title);
+
+
+          product.forEach(element => {
+            let arr = Object.values(element);
+            productarr.push(arr)
+          });
+          CreateTbody(productarr)
+
+          
+
+          filter = document.getElementById('fliterbox')
+          filter.addEventListener('change',function(){
+            ranger = document.getElementById('ranger');
+            itemname= document.getElementById('itemname').value;
+            console.log(itemname);
+            itemprice = document.getElementById('itemprice');
+            itemprice.addEventListener('change', function () {
+              ranger.value = itemprice.value;
+            });
+            itemprice.value = ranger.value;
+            itemtype = document.getElementById('type_change');
+            itemamong = document.getElementById('itemamong')
+            itemamountinput = document.getElementById('itemamountinput')
+
+            let flitterprice_arr = product.filter(function (val) {
+              return val.Price <= itemprice.value;
+            });
+            let flittertype_arr = flitterprice_arr.filter(function(val){
+              switch (itemtype.value) {
+                case '3C':
+                  return val.ProductType == "3C";
+                break;
+                case 'drink':
+                  return val.ProductType == "飲料";
+                break;
+                case 'food':
+                  return val.ProductType == "食品";
+                break;
+                case 'all':
+                  return val;
+                break;
+              } 
+            });
+            let flitteramong_arr = flittertype_arr.filter(function(val){
+              switch (itemamong.value) {
+                case '0':
+                  return val.Amount >= itemamountinput.value;
+                break;
+                case '1':
+                  return val.Amount <  itemamountinput.value;
+                break;
+                case '2':
+                  return val.Amount >  itemamountinput.value;
+                break;
+              } 
+            })
+            let flittername_arr = flitteramong_arr.filter(function(val){
+              return  val.ProductName.match(`${itemname}`) ;
+            })
+            
+            productarr.splice(0,productarr.length);
+            flittername_arr.forEach(element => {
+              let arr = Object.values(element);
+              productarr.push(arr)
+            });
+            tbody.innerText=""
+
+            CreateTbody(productarr)
+            if(tbody.innerText == ""){
+                alert('找不到商品篩選結果')
+            }
+          })
+        };
+
+        function CreateThead(titleArray) {
+            let theadTR = document.createElement("tr");
+            titleArray.forEach((title, index) => {
+              let th = document.createElement("th");
+              th.innerText = title;
+              theadTR.append(th);
+            });
+
+            thead.append(theadTR);
+            table.append(thead);
+            container.append(table);
+          };
+        function CreateTbody(productinfo) {
+              productinfo.forEach(rank => {
+                let tr = document.createElement("tr");
+                rank.forEach(columndata => {
+                  let td = document.createElement("td");
+                  td.innerText = columndata;
+
+                  tr.append(td);
+                });
+                tbody.append(tr);
+              });
+
+              table.append(tbody);
+            };
+
+    </script>
+    <script >
+      
+      
+    </script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+.head{
+    height: 200px;
+    
+}
+.fliterbox{
+    background-color: rgb(212, 212, 212);
+    .pricefliterbox{
+        background-color: rgb(235, 235, 235);
+        padding-right: 10px;
+    }
+
+}
+.searchbox{
+    height: 50px;
+    margin: 0;
+    h4{
+        margin: auto 0;
+    }
+    input{
+        height: 100%;
+    }
+}
