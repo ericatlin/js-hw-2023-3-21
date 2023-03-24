@@ -62,7 +62,7 @@
         let ranger,selector ,filter;
         let itemprice,itemamong,itemtype,itemamountinput,itemname;
         let productarr = [],product2 = [];
-        let Title = ['商品編號', '商品名稱', '商品數量', '商品價格', '商品類別'];
+        let Title = Object.keys(product[0]);
         window.onload =function(){
 
 
@@ -86,7 +86,6 @@
           filter.addEventListener('change',function(){
             ranger = document.getElementById('ranger');
             itemname= document.getElementById('itemname').value;
-            console.log(itemname);
             itemprice = document.getElementById('itemprice');
             itemprice.addEventListener('change', function () {
               ranger.value = itemprice.value;
