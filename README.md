@@ -9,4 +9,5 @@
 # 2 JavaScript 的事件處理函式的原理是什麼
 ### 他是基於事件的程式設計，其可以綁到多個物件上，具有事件監聽的物件，在事件發生時，他會執行所對應的函式。
 
-# 3 click 式物件被點擊後事件的響應 submit則是對於表單from的提交， click事件會比submit事件提早觸發，且click可以不提交任何表單。
+# 3 submit 事件和 click 事件有什麼差別?
+### click 式物件被點擊後事件的響應 submit則是對於表單from的提交， click事件會比submit事件提早觸發，且click可以不提交任何表單。
